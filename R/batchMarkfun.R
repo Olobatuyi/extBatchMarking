@@ -75,6 +75,7 @@
 #'            par         = theta,
 #'            data        = WeatherLoach,
 #'            choiceModel = "model4",
+#'            lowerBound  = rep(-Inf, length(theta)),
 #'            method      = "L-BFGS-B",
 #'            parallel    = FALSE,
 #'            hessian     = TRUE,
@@ -96,10 +97,6 @@
 batchMarkOptim <- function(par=NULL, data, choiceModel=c("model1", "model2", "model3", "model4"),
                            method=c("Nelder-Mead","BFGS", "CG", "L-BFGS-B"),parallel=FALSE, lowerBound=-Inf,
                            cores=1, hessian=FALSE, control, ...){
-
-  # my_packages <- c("Rcpp", "parallel", "optimParallel", "RcppArmadillo")                  # Specify your packages
-  # not_installed <- my_packages[!(my_packages %in% installed.packages()[ , "Package"])]    # Extract not installed packages
-  # if(length(not_installed)) install.packages(not_installed) # Stop if not installed
 
   if(parallel) {
 
@@ -191,14 +188,13 @@ batchMarkOptim <- function(par=NULL, data, choiceModel=c("model1", "model2", "mo
 
   if(hessian) res$hessian <- opt_ma$hessian
   if(parallel) {
-    
+
     suppressWarnings({
-      
+
       parallel::stopCluster(cl = cluster)
       doParallel::stopImplicitCluster()
 
     })
-
   }
 
   return(res)
@@ -306,8 +302,9 @@ batchMarkOptim <- function(par=NULL, data, choiceModel=c("model1", "model2", "mo
 #'            data        = WeatherLoach,
 #'            Umax        = 1800,
 #'            nBins       = 20,
+#'            lowerBound  = rep(-Inf, length(theta)),
 #'            choiceModel = "model4",
-#'            popSize    = "Model-Based",
+#'            popSize     = "Model-Based",
 #'            method      = "L-BFGS-B",
 #'            parallel    = FALSE,
 #'            control     = list(trace = 1))
@@ -339,10 +336,6 @@ batchMarkUnmarkOptim <- function(par=NULL, data, choiceModel=c("model1", "model2
                                  method=c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B"), Umax=1800, nBins=20,
                                  popSize=c("Horvitz_Thompson", "Model-Based"), parallel=FALSE, lowerBound=-Inf,
                                  cores=1, hessian=FALSE, control,...){
-
-  # my_packages   <- c("Rcpp", "parallel", "optimParallel", "RcppArmadillo")                # Specify your packages
-  # not_installed <- my_packages[!(my_packages %in% installed.packages()[ , "Package"])]    # Extract not installed packages
-  # if(length(not_installed)) utils::install.packages(not_installed)
 
   if(parallel) {
 
@@ -476,7 +469,7 @@ batchMarkUnmarkOptim <- function(par=NULL, data, choiceModel=c("model1", "model2
 
   if(hessian) res$hessian <- opt_ma$hessian
   if(parallel) {
-    
+
     suppressWarnings({
 
       parallel::stopCluster(cl = cluster)
